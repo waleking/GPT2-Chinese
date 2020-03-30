@@ -14,23 +14,52 @@ from tqdm import tqdm
 '''
 
 
-def build_files(raw_data_path, tokenized_data_path, full_tokenizer, num_pieces):
-    with open(raw_data_path, 'r', encoding='utf8') as f:
-        print('reading lines')
-        lines = json.load(f)
-        lines = [line.replace('\n', ' [SEP] ') for line in lines]  # 用[SEP]表示换行, 段落之间使用SEP表示段落结束
-    single = ''.join(lines)
-    len_single = len(single)
+def build_files(raw_data_path, divide_path, tokenized_data_path, full_tokenizer, num_pieces):
     if not os.path.exists(tokenized_data_path):
         os.mkdir(tokenized_data_path)
-    for i in tqdm(range(num_pieces)):
-        single_ids = full_tokenizer.convert_tokens_to_ids(
-            full_tokenizer.tokenize(single[len_single // num_pieces * i: len_single // num_pieces * (i + 1)]))
-        with open(tokenized_data_path + 'tokenized_train_{}.txt'.format(i), 'w') as f:
-            for id in single_ids[:-1]:
-                f.write(str(id) + ' ')
-            f.write(str(single_ids[-1]))
-            f.write('\n')
+    if not os.path.exists(divide_path):
+        os.mkdir(divide_path)
+    print("now time: ", datetime.now())
+    print("begin to devide raw text ...")
+
+    total_line_num = 0
+    with open(raw_data_path, 'r', encoding='utf8') as f:
+        for line in f:
+            total_line_num+=1
+
+    writers = [open(divide_path + 'devide_piece_{}.txt'.format(i), 'w') for i in range(0,num_pieces)]
+
+    with open(raw_data_path, 'r', encoding='utf8') as f:
+        line_num = 0
+        for line in f:
+            writers[line_num % num_pieces].write("%s\n" % line)
+            line_num += 1
+    
+    for i in range(0, num_pieces):
+        writers[i].close()
+    
+    print('now time: ', datetime.now())
+    print("begin making tokenization ...")
+    files = [filename for filename in os.listdir(divide_path) if f!='.gitignore']
+    for i, filename in enumerate(files):
+        if(os.path.isdir(filename)):
+            continue
+
+        with open(divide_path+filename, 'r', encoding='utf8') as reader:
+            print("reading file {}, now time is {}".format(filename, datetime.now()))
+            lines = []
+            for line in reader:
+                line = line.replace('\n', ' [SEP] ')
+                line = '[CLS] ' + line
+                lines.append(line)
+            
+            single_file = ''.join(lines)
+            single_ids = full_tokenizer.convert_tokens_to_ids(full_tokenizer._tokenize(single_file))
+            with open(tokenized_data_path + 'tokenized_train_{}.txt'.format(i), 'w') as f:
+                for id in single_ids[:-1]:
+                    f.write(str(id) + ' ')
+                f.write(str(single_ids[-1]))
+                f.write('\n')
 
     print('finish')
 
@@ -42,6 +71,8 @@ def main():
                         help='选择模型参数')
     parser.add_argument('--tokenizer_path', default='cache/vocab_small.txt', type=str, required=False, help='选择词库')
     parser.add_argument('--raw_data_path', default='data/train.json', type=str, required=False, help='原始训练语料')
+    parser.add_argument('--divide_path', default='data/divide/', type=str, required=False,
+                        help='大文件语料分割成小文件时的临时存放位置')
     parser.add_argument('--tokenized_data_path', default='data/tokenized/', type=str, required=False,
                         help='tokenized语料存放位置')
     parser.add_argument('--raw', action='store_true', help='是否先做tokenize')
@@ -96,7 +127,7 @@ def main():
 
     if raw:
         print('building files')
-        build_files(raw_data_path=raw_data_path, tokenized_data_path=tokenized_data_path, full_tokenizer=full_tokenizer,
+        build_files(raw_data_path=raw_data_path, divide_path=args.divide_path, tokenized_data_path=tokenized_data_path, full_tokenizer=full_tokenizer,
                     num_pieces=num_pieces)
         print('files built')
 
