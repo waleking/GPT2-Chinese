@@ -35,9 +35,10 @@ if [ ! -e $job_dir/tokenized/tokenized_train_0.txt ]; then
         --divide_path $job_dir/divide/ \
         --model_config config/model_config.json \
         --epochs 30 \
-        --batch_size 8 \
-        --log_step 200 \
+        --batch_size 4 \
+        --log_step 20 \
         --output_dir $job_dir/model/ \
+        --stride 1024 \
         --num_pieces 1 \
         --raw
 else
@@ -50,7 +51,9 @@ else
         --model_config config/model_config.json \
         --epochs 30 \
         --batch_size 8 \
-        --log_step 200 \
-        --output_dir $job_dir/model/ 
-        --num_pieces 1 
+        --stride 1024 \
+        --log_step 20 \
+        --output_dir $job_dir/model/ \
+        --num_pieces 1 \
+        --device 0,1
 fi
