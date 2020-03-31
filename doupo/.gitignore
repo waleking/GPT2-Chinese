@@ -2,4 +2,5 @@ divide/
 rawdata/
 tokenized/
 model/
+outputs/
 vocab.txt

@@ -7,6 +7,7 @@ if [ ! -e $job_dir/outputs ]; then
 fi
 
 python generate.py \
+    --device 0 \
     --model_path $job_dir/model/final_model/ \
     --model_config $job_dir/model/final_model/model_config.json \
     --tokenizer_path $job_dir/vocab.txt \
@@ -15,4 +16,4 @@ python generate.py \
     --topk 50 \
     --nsamples 50 \
     --save_samples \
-    --save_samples_path $job_dir/outputs/generated.txt
+    --save_samples_path $job_dir/outputs/
