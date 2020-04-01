@@ -1,4 +1,11 @@
-*.tar.gz
-*.dat
-*.txt
-
+divide/
+rawdata/
+tokenized/
+model/
+outputs/
+config/
+vocab.txt
+SogouCA.tar.gz
+SogouCS.tar.gz
+news_sohusite_xml.full.tar.gz
+news_tensite_xml.full.tar.gz

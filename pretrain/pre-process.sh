@@ -16,3 +16,10 @@ rm sogou.xml
 
 python extract_title_content.py
 rm sogou_utf8.txt
+
+if [ ! -e rawdata ]; then
+    mkdir rawdata
+fi
+mv ./sogou_utf8_only_content.txt rawdata/
+mv ./sogou_utf8_title_content.txt rawdata/
+echo "save sogou_utf8_only_content.txt into the rawdata folder"
