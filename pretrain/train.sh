@@ -22,10 +22,6 @@ if [ ! -e $job_dir/config ]; then
     mkdir $job_dir/config
 fi
 
-if [ ! -e $job_dir/rawdata/train.txt ]; then
-    wget -c -O $job_dir/rawdata/train.txt https://github.com/GaoPeng97/transformer-xl-chinese/blob/master/data/doupo/train.txt?raw=true
-fi
-
 vocab_size=21128
 new_vocab_size=$(($vocab_size+26))
 echo 'setting config/vocab.txt and config/model_config.json'
@@ -42,7 +38,7 @@ if [ ! -e $job_dir/config/model_config.json ]; then
     perl -pi -e 's/'$vocab_size'/'$new_vocab_size'/g' $job_dir/config/model_config.json
 fi
 
-raw_data_path=$job_dir/rawdata/train.txt
+raw_data_path=$job_dir/rawdata/sogou_utf8_title_content.txt
 tokenizer_path=$job_dir/config/vocab.txt
 tokenized_data_path=$job_dir/tokenized/
 divide_path=$job_dir/divide/
@@ -52,7 +48,7 @@ batch_size=4
 stride=1024
 log_step=20
 output_dir=$job_dir/model/
-num_pieces=1
+num_pieces=500
 
 if [ ! -e $job_dir/tokenized/tokenized_train_0.txt ]; then
     # tokenization then run the training

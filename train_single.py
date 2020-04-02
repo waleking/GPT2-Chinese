@@ -8,6 +8,7 @@ import numpy as np
 from datetime import datetime
 from torch.nn import DataParallel
 from tqdm import tqdm
+import pdb
 
 '''
 如果训练材料是全部堆在一起不分篇章的话用这个文件
@@ -20,14 +21,14 @@ def build_files(raw_data_path, divide_path, tokenized_data_path, full_tokenizer,
     if not os.path.exists(divide_path):
         os.mkdir(divide_path)
     print("now time: ", datetime.now())
-    print("begin to devide raw text ...")
+    print("begin to divide raw text ...")
 
     total_line_num = 0
     with open(raw_data_path, 'r', encoding='utf8') as f:
         for line in f:
             total_line_num+=1
 
-    writers = [open(divide_path + 'devide_piece_{}.txt'.format(i), 'w') for i in range(0,num_pieces)]
+    writers = [open(divide_path + 'divide_piece_{}.txt'.format(i), 'w') for i in range(0,num_pieces)]
 
     with open(raw_data_path, 'r', encoding='utf8') as f:
         line_num = 0
@@ -49,11 +50,12 @@ def build_files(raw_data_path, divide_path, tokenized_data_path, full_tokenizer,
             print("reading file {}, now time is {}".format(filename, datetime.now()))
             lines = []
             for line in reader:
-                line = line.replace('\n', ' [SEP] ')
-                line = '[CLS] ' + line
+                line = line.replace('\n', '[SEP]')
+                line = '[CLS]' + line
                 lines.append(line)
             
             single_file = ''.join(lines)
+            #pdb.set_trace()
             single_ids = full_tokenizer.convert_tokens_to_ids(full_tokenizer._tokenize(single_file))
             with open(tokenized_data_path + 'tokenized_train_{}.txt'.format(i), 'w') as f:
                 for id in single_ids[:-1]:
@@ -95,17 +97,16 @@ def main():
     print('args:\n' + args.__repr__())
 
     if args.segment:
-        from tokenizations import tokenization_bert_word_level as tokenization_bert
+        from tokenizations import tokenization_bert_word_level as tokenization_util
     else:
-        from tokenizations import tokenization_bert
+        from tokenizations import tokenization_chars as tokenization_util
 
     os.environ["CUDA_VISIBLE_DEVICES"] = args.device  # 此处设置程序使用哪些显卡
     model_config = transformers.modeling_gpt2.GPT2Config.from_json_file(args.model_config)
     print('config:\n' + model_config.to_json_string())
 
     n_ctx = model_config.n_ctx
-    full_tokenizer = tokenization_bert.BertTokenizer(vocab_file=args.tokenizer_path)
-    full_tokenizer.max_len = 999999
+    full_tokenizer = tokenization_util.BertTokenizer(vocab_file=args.tokenizer_path)
     device = 'cuda' if torch.cuda.is_available() else 'cpu'
     print('using device:', device)
 
