@@ -144,7 +144,7 @@ class BertTokenizer(PreTrainedTokenizer):
         result = []
         i = 0
         len_txt = len(text)
-        while(i<len(text)):
+        while(i<len_txt):
             char = text[i]
             if(len(stack)==0):
                 if(char != '['):
@@ -152,7 +152,7 @@ class BertTokenizer(PreTrainedTokenizer):
                 else:
                     stack.append('[')
             else:
-                if(char != ']'):
+                if(char == ']'):
                     stack.append(char) # don't forget to append it firstly
                     # process the content in the stack
                     seq = "".join(stack)
@@ -172,6 +172,7 @@ class BertTokenizer(PreTrainedTokenizer):
         if(len(stack)>0): 
             for e in stack:
                 result.append(e)
+        # pdb.set_trace()
         return result
 
     def _convert_token_to_id(self, token):

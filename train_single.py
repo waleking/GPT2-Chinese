@@ -33,7 +33,7 @@ def build_files(raw_data_path, divide_path, tokenized_data_path, full_tokenizer,
     with open(raw_data_path, 'r', encoding='utf8') as f:
         line_num = 0
         for line in f:
-            writers[line_num % num_pieces].write("%s\n" % line)
+            writers[line_num % num_pieces].write("%s" % line)
             line_num += 1
     
     for i in range(0, num_pieces):
@@ -55,13 +55,14 @@ def build_files(raw_data_path, divide_path, tokenized_data_path, full_tokenizer,
                 lines.append(line)
             
             single_file = ''.join(lines)
-            #pdb.set_trace()
             single_ids = full_tokenizer.convert_tokens_to_ids(full_tokenizer._tokenize(single_file))
+            # pdb.set_trace()
             with open(tokenized_data_path + 'tokenized_train_{}.txt'.format(i), 'w') as f:
                 for id in single_ids[:-1]:
                     f.write(str(id) + ' ')
                 f.write(str(single_ids[-1]))
                 f.write('\n')
+        print('now time: {}, tokenized tokenized_train_{}.txt'.format(datetime.now(), i))
 
     print('finish')
 

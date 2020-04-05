@@ -23,7 +23,9 @@ if [ ! -e $job_dir/config ]; then
 fi
 
 if [ ! -e $job_dir/rawdata/train.txt ]; then
-    wget -c -O $job_dir/rawdata/train.txt https://github.com/GaoPeng97/transformer-xl-chinese/blob/master/data/doupo/train.txt?raw=true
+    wget -c -O $job_dir/rawdata/train_raw.txt https://github.com/GaoPeng97/transformer-xl-chinese/blob/master/data/doupo/train.txt?raw=true
+    # remove empty lines
+    python $job_dir/format_raw_txt.py $job_dir/rawdata/train_raw.txt $job_dir/rawdata/train.txt 
 fi
 
 vocab_size=21128
@@ -42,7 +44,7 @@ tokenized_data_path=$job_dir/tokenized/
 divide_path=$job_dir/divide/
 model_config=$job_dir/config/model_config.json
 epochs=30
-batch_size=4
+batch_size=8
 stride=1024
 log_step=20
 output_dir=$job_dir/model/
@@ -50,7 +52,7 @@ num_pieces=1
 
 if [ ! -e $job_dir/tokenized/tokenized_train_0.txt ]; then
     # tokenization then run the training
-    python -m pyinstrument --renderer=html train_single.py \
+    python train_single.py \
         --raw_data_path $raw_data_path \
         --tokenizer_path $tokenizer_path \
         --tokenized_data_path $tokenized_data_path \
@@ -65,7 +67,7 @@ if [ ! -e $job_dir/tokenized/tokenized_train_0.txt ]; then
         --raw 
 else
     # run the training on the tokenized files
-    python -m pyinstrument --renderer=html train_single.py \
+    python train_single.py \
         --raw_data_path $raw_data_path \
         --tokenizer_path $tokenizer_path \
         --tokenized_data_path $tokenized_data_path \
