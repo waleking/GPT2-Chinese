@@ -29,13 +29,23 @@ if [ ! -e $job_dir/rawdata/train.txt ]; then
 fi
 
 vocab_size=21128
+declare -a additional_chars=("“" "”" "…" "’" "‘" "—" " " "\t" "\`")
+new_vocab_size=$(($vocab_size+${#additional_chars[@]}+26))
 echo 'setting config/vocab.txt and config/model_config.json'
 if [ ! -e $job_dir/config/vocab.txt ]; then
     wget -c -O $job_dir/config/vocab.txt https://s3.amazonaws.com/models.huggingface.co/bert/bert-base-chinese-vocab.txt
+    # append new characters to the vocabulary
+    for letter in "${additional_chars[@]}"; do
+        echo -e "$letter" >> $job_dir/config/vocab.txt
+    done
+    for letter in {A..Z} ; do
+        echo $letter >> $job_dir/config/vocab.txt
+    done
 fi
 
 if [ ! -e $job_dir/config/model_config.json ]; then
     cp config/model_config.json $job_dir/config/model_config.json
+    perl -pi -e 's/'$vocab_size'/'$new_vocab_size'/g' $job_dir/config/model_config.json
 fi
 
 raw_data_path=$job_dir/rawdata/train.txt

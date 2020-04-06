@@ -177,4 +177,6 @@ class BertTokenizer(PreTrainedTokenizer):
 
     def _convert_token_to_id(self, token):
         """ Converts a token (str/unicode) in an id using the vocab. """
+        #if(token not in self.vocab):
+        #    print(token)
         return self.vocab.get(token, self.vocab.get(self.unk_token))
