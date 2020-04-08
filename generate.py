@@ -178,7 +178,7 @@ def main():
     while True:
         raw_text = args.prefix
         context_tokens = tokenizer.convert_tokens_to_ids(tokenizer.tokenize(raw_text))
-        pdb.set_trace()
+        #pdb.set_trace()
         generated = 0
         for _ in range(nsamples // batch_size):
             out = generate(

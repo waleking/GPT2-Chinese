@@ -53,7 +53,7 @@ tokenizer_path=$job_dir/config/vocab.txt
 tokenized_data_path=$job_dir/tokenized/
 divide_path=$job_dir/divide/
 model_config=$job_dir/config/model_config.json
-epochs=30
+epochs=90
 batch_size=8
 stride=1024
 log_step=20
@@ -82,6 +82,7 @@ else
         --tokenizer_path $tokenizer_path \
         --tokenized_data_path $tokenized_data_path \
         --divide_path $divide_path \
+        --pretrained_model $job_dir/model/final_model/ \
         --model_config $model_config \
         --epochs $epochs \
         --batch_size $batch_size \
