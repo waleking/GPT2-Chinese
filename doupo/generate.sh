@@ -10,7 +10,7 @@ python generate.py \
     --device 0 \
     --model_path $job_dir/model/final_model/ \
     --model_config $job_dir/model/final_model/model_config.json \
-    --tokenizer_path $job_dir/vocab.txt \
+    --tokenizer_path $job_dir/config/vocab.txt \
     --temperature 0.8 \
     --length 50 \
     --topk 50 \
