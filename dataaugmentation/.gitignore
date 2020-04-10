@@ -1,0 +1,8 @@
+divide/
+tokenized/
+model/
+outputs/
+config/
+vocab.txt
+rawdata/*.pt
+rawdata/train.txt
