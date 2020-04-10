@@ -14,13 +14,17 @@ if [ ! -e $job_dir/tokenized ]; then
     mkdir $job_dir/tokenized
 fi
 
-if [ ! -e $job_dir/model_from_scratch ]; then
-    mkdir $job_dir/model_from_scratch
+if [ ! -e $job_dir/model_finetuned ]; then
+    mkdir $job_dir/model_finetuned
 fi
 
-if [ ! -e $job_dir/config ]; then
-    mkdir $job_dir/config
+if [ ! -e $job_dir/pretrain_model ]; then
+    mkdir $job_dir/pretrain_model
+    wget -c -O $job_dir/pretrain_model/pytorch_model.bin https://www.dropbox.com/s/yqxuu6fszqto4od/pytorch_model.bin?dl=0
+    wget -c -O $job_dir/pretrain_model/config.json https://www.dropbox.com/s/7z599ixdzyghkth/config.json?dl=0 
+    wget -c -O $job_dir/pretrain_model/vocab.txt https://www.dropbox.com/s/9obd0qadtst347l/vocab.txt?dl=0 
 fi
+
 
 if [ ! -e $job_dir/rawdata/train.txt ]; then
     echo "downloading data ..."
@@ -29,27 +33,16 @@ if [ ! -e $job_dir/rawdata/train.txt ]; then
     echo "data is downloaded at "$job_dir/rawdata/train.txt
 fi
 
-echo 'setting config/vocab.txt and config/model_config.json'
-if [ ! -e $job_dir/config/vocab.txt ]; then
-    wget -c -O $job_dir/config/vocab.txt https://s3.amazonaws.com/models.huggingface.co/bert/bert-base-chinese-vocab.txt
-fi
-
-if [ ! -e $job_dir/config/model_config.json ]; then
-    cp config/model_config.json $job_dir/config/model_config.json
-    # change the number of layers from 12 to 10
-    perl -pi -e 's/"n_layer": 12/"n_layer": 10/g' $job_dir/config/model_config.json
-fi
-
 raw_data_path=$job_dir/rawdata/train.txt
-tokenizer_path=$job_dir/config/vocab.txt
+tokenizer_path=$job_dir/pretrain_model/vocab.txt
 tokenized_data_path=$job_dir/tokenized/
 divide_path=$job_dir/divide/
-model_config=$job_dir/config/model_config.json
+model_config=$job_dir/pretrain_model/model_config.json
 epochs=300
 batch_size=8
 stride=1024
 log_step=1
-output_dir=$job_dir/model_from_scratch/
+output_dir=$job_dir/model_finetuned/
 num_pieces=1
 
 if [ ! -e $job_dir/tokenized/tokenized_train_0.txt ]; then
