@@ -6,4 +6,4 @@ config/
 vocab.txt
 rawdata/*.pt
 rawdata/train.txt
-model_without_fintuning/
+model_from_scratch/

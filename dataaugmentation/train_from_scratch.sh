@@ -47,7 +47,7 @@ epochs=300
 batch_size=8
 stride=1024
 log_step=1
-output_dir=$job_dir/model_without_fintuning/
+output_dir=$job_dir/model_from_scratch/
 num_pieces=1
 
 if [ ! -e $job_dir/tokenized/tokenized_train_0.txt ]; then
