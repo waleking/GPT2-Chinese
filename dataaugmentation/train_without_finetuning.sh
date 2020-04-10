@@ -14,7 +14,7 @@ if [ ! -e $job_dir/tokenized ]; then
     mkdir $job_dir/tokenized
 fi
 
-if [ ! -e $job_dir/model_without_fintuning]; then
+if [ ! -e $job_dir/model_without_fintuning ]; then
     mkdir $job_dir/model_without_fintuning
 fi
 
@@ -46,7 +46,7 @@ model_config=$job_dir/config/model_config.json
 epochs=90
 batch_size=8
 stride=1024
-log_step=20
+log_step=1
 output_dir=$job_dir/model_without_fintuning/
 num_pieces=1
 
@@ -64,7 +64,8 @@ if [ ! -e $job_dir/tokenized/tokenized_train_0.txt ]; then
         --log_step $log_step \
         --output_dir $output_dir \
         --num_pieces $num_pieces \
-        --raw 
+        --raw \
+        --ignore_intermediate_epoch_model
 else
     # run the training on the tokenized files
     python train_single.py \
@@ -79,5 +80,6 @@ else
         --log_step $log_step \
         --output_dir $output_dir \
         --num_pieces $num_pieces \
-        --device 0,1
+        --device 0,1 \
+        --ignore_intermediate_epoch_model
 fi

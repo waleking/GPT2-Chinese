@@ -29,7 +29,7 @@ import pdb
 
 def format(foldername):
     files = [f for f in os.listdir(foldername) if ".pt" in f]
-    pdb.set_trace()
+    # pdb.set_trace()
     with open(foldername+"/"+"train.txt", "w") as fWriter:
         for filename in files:
             result = ""

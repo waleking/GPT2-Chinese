@@ -93,6 +93,7 @@ def main():
     parser.add_argument('--output_dir', default='model/', type=str, required=False, help='模型输出路径')
     parser.add_argument('--pretrained_model', default='', type=str, required=False, help='模型训练起点路径')
     parser.add_argument('--segment', action='store_true', help='中文以词为单位')
+    parser.add_argument('--ignore_intermediate_epoch_model', action='store_ture', help='不保存每个epoch对应的模型，仅保存最后的模型')
 
     args = parser.parse_args()
     print('args:\n' + args.__repr__())
@@ -234,18 +235,20 @@ def main():
                     running_loss = 0
             piece_num += 1
 
-        print('saving model for epoch {}'.format(epoch + 1))
-        if not os.path.exists(output_dir + 'model_epoch{}'.format(epoch + 1)):
-            os.mkdir(output_dir + 'model_epoch{}'.format(epoch + 1))
-        model_to_save = model.module if hasattr(model, 'module') else model
-        model_to_save.save_pretrained(output_dir + 'model_epoch{}'.format(epoch + 1))
-        # torch.save(scheduler.state_dict(), output_dir + 'model_epoch{}/scheduler.pt'.format(epoch + 1))
-        # torch.save(optimizer.state_dict(), output_dir + 'model_epoch{}/optimizer.pt'.format(epoch + 1))
-        print('epoch {} finished'.format(epoch + 1))
+        if(args.ignore_intermediate_epoch_model==False):
+            print('saving model for epoch {}'.format(epoch + 1))
+            if not os.path.exists(output_dir + 'model_epoch{}'.format(epoch + 1)):
+                os.mkdir(output_dir + 'model_epoch{}'.format(epoch + 1))
+            
+            model_to_save = model.module if hasattr(model, 'module') else model
+            model_to_save.save_pretrained(output_dir + 'model_epoch{}'.format(epoch + 1))
+            # torch.save(scheduler.state_dict(), output_dir + 'model_epoch{}/scheduler.pt'.format(epoch + 1))
+            # torch.save(optimizer.state_dict(), output_dir + 'model_epoch{}/optimizer.pt'.format(epoch + 1))
+            print('epoch {} finished'.format(epoch + 1))
 
-        then = datetime.now()
-        print('time: {}'.format(then))
-        print('time for one epoch: {}'.format(then - now))
+            then = datetime.now()
+            print('time: {}'.format(then))
+            print('time for one epoch: {}'.format(then - now))
 
     print('training finished')
     if not os.path.exists(output_dir + 'final_model'):
