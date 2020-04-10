@@ -93,7 +93,7 @@ def main():
     parser.add_argument('--output_dir', default='model/', type=str, required=False, help='模型输出路径')
     parser.add_argument('--pretrained_model', default='', type=str, required=False, help='模型训练起点路径')
     parser.add_argument('--segment', action='store_true', help='中文以词为单位')
-    parser.add_argument('--ignore_intermediate_epoch_model', action='store_ture', help='不保存每个epoch对应的模型，仅保存最后的模型')
+    parser.add_argument('--ignore_intermediate_epoch_model', action='store_true', help='不保存每个epoch对应的模型，仅保存最后的模型')
 
     args = parser.parse_args()
     print('args:\n' + args.__repr__())
