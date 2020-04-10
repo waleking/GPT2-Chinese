@@ -9,7 +9,7 @@ fi
 tokenizer_path=$job_dir/config/vocab.txt
 model_path=$job_dir/model_from_scratch/final_model/
 model_config=$model_path/model_config.json
-sample_path=$job_dir/outputs/
+sample_path=$job_dir/outputs_from_scratch/
 
 python generate.py \
     --device 0 \

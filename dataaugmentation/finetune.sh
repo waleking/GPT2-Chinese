@@ -18,11 +18,11 @@ if [ ! -e $job_dir/model_finetuned ]; then
     mkdir $job_dir/model_finetuned
 fi
 
-if [ ! -e $job_dir/pretrain_model ]; then
-    mkdir $job_dir/pretrain_model
-    wget -c -O $job_dir/pretrain_model/pytorch_model.bin https://www.dropbox.com/s/yqxuu6fszqto4od/pytorch_model.bin?dl=0
-    wget -c -O $job_dir/pretrain_model/config.json https://www.dropbox.com/s/7z599ixdzyghkth/config.json?dl=0 
-    wget -c -O $job_dir/pretrain_model/vocab.txt https://www.dropbox.com/s/9obd0qadtst347l/vocab.txt?dl=0 
+if [ ! -e $job_dir/pretrained_model ]; then
+    mkdir $job_dir/pretrained_model
+    wget -c -O $job_dir/pretrained_model/pytorch_model.bin https://www.dropbox.com/s/yqxuu6fszqto4od/pytorch_model.bin?dl=0
+    wget -c -O $job_dir/pretrained_model/config.json https://www.dropbox.com/s/7z599ixdzyghkth/config.json?dl=0 
+    wget -c -O $job_dir/pretrained_model/vocab.txt https://www.dropbox.com/s/9obd0qadtst347l/vocab.txt?dl=0 
 fi
 
 
@@ -33,11 +33,12 @@ if [ ! -e $job_dir/rawdata/train.txt ]; then
     echo "data is downloaded at "$job_dir/rawdata/train.txt
 fi
 
+pretrained_model=$job_dir/pretrained_model
 raw_data_path=$job_dir/rawdata/train.txt
-tokenizer_path=$job_dir/pretrain_model/vocab.txt
+tokenizer_path=$job_dir/pretrained_model/vocab.txt
 tokenized_data_path=$job_dir/tokenized/
 divide_path=$job_dir/divide/
-model_config=$job_dir/pretrain_model/model_config.json
+model_config=$job_dir/pretrained_model/config.json
 epochs=300
 batch_size=8
 stride=1024
@@ -48,6 +49,7 @@ num_pieces=1
 if [ ! -e $job_dir/tokenized/tokenized_train_0.txt ]; then
     # tokenization then run the training
     python train_single.py \
+        --pretrained_model $pretrained_model \
         --raw_data_path $raw_data_path \
         --tokenizer_path $tokenizer_path \
         --tokenized_data_path $tokenized_data_path \
@@ -64,6 +66,7 @@ if [ ! -e $job_dir/tokenized/tokenized_train_0.txt ]; then
 else
     # run the training on the tokenized files
     python train_single.py \
+        --pretrained_model $pretrained_model \
         --raw_data_path $raw_data_path \
         --tokenizer_path $tokenizer_path \
         --tokenized_data_path $tokenized_data_path \

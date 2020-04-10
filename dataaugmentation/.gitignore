@@ -6,4 +6,8 @@ config/
 vocab.txt
 rawdata/*.pt
 rawdata/train.txt
+pretrained_model/
 model_from_scratch/
+model_finetuned/
+outputs_finetuned/
+outputs_from_scratch/
