@@ -36,6 +36,8 @@ fi
 
 if [ ! -e $job_dir/config/model_config.json ]; then
     cp config/model_config.json $job_dir/config/model_config.json
+    # change the number of layers from 12 to 10
+    perl -pi -e 's/"n_layer": 12/"n_layer": 10/g' $job_dir/config/model_config.json
 fi
 
 raw_data_path=$job_dir/rawdata/train.txt
