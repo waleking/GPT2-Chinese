@@ -114,75 +114,63 @@ def main():
         token.append(full_tokenizer.convert_tokens_to_ids('[SEP]'))
         token.extend(full_tokenizer.convert_tokens_to_ids(['[PAD]'])*(n_ctx-len(token)) )
         tokens.append(token)
-        
+    pdb.set_trace() # check tokens
     print('starting training')
     running_loss = 0
     for epoch in range(epochs):
         print('epoch {}'.format(epoch + 1))
         now = datetime.now()
         print('time: {}'.format(now))
-        for i in x:
-            with open(tokenized_data_path + 'tokenized_train_{}.txt'.format(i), 'r') as f:
-                line = f.read().strip()
-            tokens = line.split()
-            tokens = [int(token) for token in tokens]
-            start_point = 0
-            samples = []
-            while start_point < len(tokens) - n_ctx:
-                samples.append(tokens[start_point: start_point + n_ctx])
-                start_point += stride
-            if start_point < len(tokens):
-                samples.append(tokens[len(tokens)-n_ctx:])
-            random.shuffle(samples)
-            for step in range(len(samples) // batch_size):
+        samples = tokens
+        random.shuffle(samples)
+        for step in range(len(samples) // batch_size): # drop last
 
-                #  prepare data
-                batch = samples[step * batch_size: (step + 1) * batch_size]
-                batch_labels = []
-                batch_inputs = []
-                for ids in batch:
-                    int_ids_for_labels = [int(x) for x in ids]
-                    int_ids_for_inputs = [int(x) for x in ids]
-                    batch_labels.append(int_ids_for_labels)
-                    batch_inputs.append(int_ids_for_inputs)
-                batch_labels = torch.tensor(batch_labels).long().to(device)
-                batch_inputs = torch.tensor(batch_inputs).long().to(device)
+            #  prepare data
+            batch = samples[step * batch_size: (step + 1) * batch_size]
+            batch_labels = []
+            batch_inputs = []
+            for ids in batch:
+                int_ids_for_labels = [int(x) for x in ids]
+                int_ids_for_inputs = [int(x) for x in ids]
+                batch_labels.append(int_ids_for_labels)
+                batch_inputs.append(int_ids_for_inputs)
+            batch_labels = torch.tensor(batch_labels).long().to(device)
+            batch_inputs = torch.tensor(batch_inputs).long().to(device)
 
-                #  forward pass
-                outputs = model.forward(input_ids=batch_inputs, labels=batch_labels)
-                loss, logits = outputs[:2]
+            #  forward pass
+            outputs = model.forward(input_ids=batch_inputs, labels=batch_labels)
+            loss, logits = outputs[:2]
 
-                #  get loss
-                if multi_gpu:
-                    loss = loss.mean()
-                if gradient_accumulation > 1:
-                    loss = loss / gradient_accumulation
+            #  get loss
+            if multi_gpu:
+                loss = loss.mean()
+            if gradient_accumulation > 1:
+                loss = loss / gradient_accumulation
 
-                #  loss backward
-                if fp16:
-                    with amp.scale_loss(loss, optimizer) as scaled_loss:
-                        scaled_loss.backward()
-                        torch.nn.utils.clip_grad_norm_(amp.master_params(optimizer), max_grad_norm)
-                else:
-                    loss.backward()
-                    torch.nn.utils.clip_grad_norm_(model.parameters(), max_grad_norm)
+            #  loss backward
+            if fp16:
+                with amp.scale_loss(loss, optimizer) as scaled_loss:
+                    scaled_loss.backward()
+                    torch.nn.utils.clip_grad_norm_(amp.master_params(optimizer), max_grad_norm)
+            else:
+                loss.backward()
+                torch.nn.utils.clip_grad_norm_(model.parameters(), max_grad_norm)
 
-                #  optimizer step
-                if (step + 1) % gradient_accumulation == 0:
-                    running_loss += loss.item()
-                    optimizer.step()
-                    optimizer.zero_grad()
-                    scheduler.step()
-                if (step + 1) % log_step == 0:
-                    print('now time: {}:{}. Step {} of piece {} of epoch {}, loss {}'.format(
-                        datetime.now().hour,
-                        datetime.now().minute,
-                        (step + 1) // gradient_accumulation,
-                        piece_num,
-                        epoch + 1,
-                        running_loss / log_step))
-                    running_loss = 0
-            piece_num += 1
+            #  optimizer step
+            if (step + 1) % gradient_accumulation == 0:
+                running_loss += loss.item()
+                optimizer.step()
+                optimizer.zero_grad()
+                scheduler.step()
+            if (step + 1) % log_step == 0:
+                print('now time: {}:{}. Step {} of piece {} of epoch {}, loss {}'.format(
+                    datetime.now().hour,
+                    datetime.now().minute,
+                    (step + 1) // gradient_accumulation,
+                    0,
+                    epoch + 1,
+                    running_loss / log_step))
+                running_loss = 0
 
         if(args.ignore_intermediate_epoch_model==False):
             print('saving model for epoch {}'.format(epoch + 1))
