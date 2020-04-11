@@ -20,7 +20,7 @@ date:
 ==>
 月[MASK][MASK]炊烟上下[MASK]月亮是掘井的白猿[MASK]月亮是惨笑的河流上的白猿[MASK][MASK]多少回天上的伤口淌血...
 Rule 1: replace \n with [MASK]
-Rule 2: replace the whitespace " " with [PAD] 
+Rule 2: replace the whitespace " " with [unused1] 
 '''
 
 import os
@@ -40,7 +40,7 @@ def format(foldername):
                     elif("date:" in line):
                         result += "[MASK]"
                     else:
-                        result += line.replace("\n", "[MASK]").replace(" ", "[PAD]")
+                        result += line.replace("\n", "[MASK]").replace(" ", "[unused1]")
             fWriter.write("%s\n" % result)
 
 def test():

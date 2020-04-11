@@ -6,14 +6,6 @@ if [ ! -e $job_dir/rawdata ]; then
     mkdir $job_dir/rawdata
 fi
 
-if [ ! -e $job_dir/divide ]; then
-    mkdir $job_dir/divide
-fi
-
-if [ ! -e $job_dir/tokenized ]; then
-    mkdir $job_dir/tokenized
-fi
-
 if [ ! -e $job_dir/model_from_scratch ]; then
     mkdir $job_dir/model_from_scratch
 fi
@@ -42,8 +34,6 @@ fi
 
 raw_data_path=$job_dir/rawdata/train.txt
 tokenizer_path=$job_dir/config/vocab.txt
-tokenized_data_path=$job_dir/tokenized/
-divide_path=$job_dir/divide/
 model_config=$job_dir/config/model_config.json
 epochs=300
 batch_size=8
@@ -52,36 +42,16 @@ log_step=1
 output_dir=$job_dir/model_from_scratch/
 num_pieces=1
 
-if [ ! -e $job_dir/tokenized/tokenized_train_0.txt ]; then
-    # tokenization then run the training
-    python train_single.py \
-        --raw_data_path $raw_data_path \
-        --tokenizer_path $tokenizer_path \
-        --tokenized_data_path $tokenized_data_path \
-        --divide_path $divide_path \
-        --model_config $model_config \
-        --epochs $epochs \
-        --batch_size $batch_size \
-        --stride $stride \
-        --log_step $log_step \
-        --output_dir $output_dir \
-        --num_pieces $num_pieces \
-        --raw \
-        --ignore_intermediate_epoch_model
-else
-    # run the training on the tokenized files
-    python train_single.py \
-        --raw_data_path $raw_data_path \
-        --tokenizer_path $tokenizer_path \
-        --tokenized_data_path $tokenized_data_path \
-        --divide_path $divide_path \
-        --model_config $model_config \
-        --epochs $epochs \
-        --batch_size $batch_size \
-        --stride $stride \
-        --log_step $log_step \
-        --output_dir $output_dir \
-        --num_pieces $num_pieces \
-        --device 0,1 \
-        --ignore_intermediate_epoch_model
-fi
+python train_on_small_file.py \
+    --raw_data_path $raw_data_path \
+    --tokenizer_path $tokenizer_path \
+    --tokenized_data_path $tokenized_data_path \
+    --model_config $model_config \
+    --epochs $epochs \
+    --batch_size $batch_size \
+    --stride $stride \
+    --log_step $log_step \
+    --output_dir $output_dir \
+    --num_pieces $num_pieces \
+    --device 0,1 \
+    --ignore_intermediate_epoch_model
