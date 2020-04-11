@@ -29,7 +29,7 @@ pretrained_model=$job_dir/pretrained_model
 raw_data_path=$job_dir/rawdata/train.txt
 tokenizer_path=$job_dir/pretrained_model/vocab.txt
 model_config=$job_dir/pretrained_model/config.json
-epochs=300
+epochs=80
 batch_size=8
 stride=1024
 log_step=1
@@ -40,8 +40,6 @@ python train_on_small_file.py \
     --pretrained_model $pretrained_model \
     --raw_data_path $raw_data_path \
     --tokenizer_path $tokenizer_path \
-    --tokenized_data_path $tokenized_data_path \
-    --divide_path $divide_path \
     --model_config $model_config \
     --epochs $epochs \
     --batch_size $batch_size \

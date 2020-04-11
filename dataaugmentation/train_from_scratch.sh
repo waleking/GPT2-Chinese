@@ -35,7 +35,7 @@ fi
 raw_data_path=$job_dir/rawdata/train.txt
 tokenizer_path=$job_dir/config/vocab.txt
 model_config=$job_dir/config/model_config.json
-epochs=300
+epochs=80
 batch_size=8
 stride=1024
 log_step=1

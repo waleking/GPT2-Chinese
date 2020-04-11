@@ -114,7 +114,7 @@ def main():
         token.append(full_tokenizer.convert_tokens_to_ids('[SEP]'))
         token.extend(full_tokenizer.convert_tokens_to_ids(['[PAD]'])*(n_ctx-len(token)) )
         tokens.append(token)
-    pdb.set_trace() # check tokens
+    # pdb.set_trace() # check tokens
     print('starting training')
     running_loss = 0
     for epoch in range(epochs):
