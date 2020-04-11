@@ -45,7 +45,6 @@ num_pieces=1
 python train_on_small_file.py \
     --raw_data_path $raw_data_path \
     --tokenizer_path $tokenizer_path \
-    --tokenized_data_path $tokenized_data_path \
     --model_config $model_config \
     --epochs $epochs \
     --batch_size $batch_size \

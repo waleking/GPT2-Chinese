@@ -55,7 +55,6 @@ def main():
     print('using device:', device)
 
     raw_data_path = args.raw_data_path
-    tokenized_data_path = args.tokenized_data_path
     epochs = args.epochs
     batch_size = args.batch_size
     lr = args.lr
@@ -113,7 +112,7 @@ def main():
         token.append(full_tokenizer.convert_tokens_to_ids('[CLS]'))
         token.extend(content)
         token.append(full_tokenizer.convert_tokens_to_ids('[SEP]'))
-        token.extend(full_tokenizer.convert_tokens_to_ids('[PAD]')*(n_ctx-len(token)) )
+        token.extend(full_tokenizer.convert_tokens_to_ids(['[PAD]'])*(n_ctx-len(token)) )
         tokens.append(token)
         
     print('starting training')
@@ -122,9 +121,6 @@ def main():
         print('epoch {}'.format(epoch + 1))
         now = datetime.now()
         print('time: {}'.format(now))
-        x = np.linspace(0, num_pieces - 1, num_pieces, dtype=np.int32)
-        random.shuffle(x)
-        piece_num = 0
         for i in x:
             with open(tokenized_data_path + 'tokenized_train_{}.txt'.format(i), 'r') as f:
                 line = f.read().strip()
