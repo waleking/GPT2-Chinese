@@ -17,7 +17,7 @@ python generate.py \
     --model_config $model_config \
     --tokenizer_path $tokenizer_path \
     --temperature 0.8 \
-    --prefix 月亮 \
+    --prefix [MASK][MASK][MASK]月亮 \
     --length 50 \
     --topk 50 \
     --nsamples 50 \

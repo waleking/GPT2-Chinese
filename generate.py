@@ -196,9 +196,7 @@ def main():
                     if is_word(item) and is_word(text[i + 1]):
                         text[i] = item + ' '
                 for i, item in enumerate(text):
-                    if item == '[MASK]':
-                        text[i] = ''
-                    elif item == '[CLS]':
+                    if item == '[CLS]':
                         text[i] = '\n\n'
                     elif item == '[SEP]':
                         text[i] = '\n'
