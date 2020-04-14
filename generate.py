@@ -192,14 +192,9 @@ def main():
             for i in range(batch_size):
                 generated += 1
                 text = tokenizer.convert_ids_to_tokens(out)
-                for i, item in enumerate(text[:-1]):  # 确保英文前后有空格
-                    if is_word(item) and is_word(text[i + 1]):
-                        text[i] = item + ' '
                 for i, item in enumerate(text):
                     if item == '[CLS]':
                         text[i] = '\n\n'
-                    elif item == '[SEP]':
-                        text[i] = '\n'
                 info = "=" * 40 + " SAMPLE " + str(generated) + " " + "=" * 40 + "\n"
                 print(info)
                 text = ''.join(text).replace('##', '').strip()
