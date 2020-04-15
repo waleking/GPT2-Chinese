@@ -23,11 +23,6 @@ def build_files(raw_data_path, divide_path, tokenized_data_path, full_tokenizer,
     print("now time: ", datetime.now())
     print("begin to divide raw text ...")
 
-    total_line_num = 0
-    with open(raw_data_path, 'r', encoding='utf8') as f:
-        for line in f:
-            total_line_num+=1
-
     writers = [open(divide_path + 'divide_piece_{}.txt'.format(i), 'w') for i in range(0,num_pieces)]
 
     with open(raw_data_path, 'r', encoding='utf8') as f:
