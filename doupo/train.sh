@@ -29,6 +29,8 @@ if [ ! -e $job_dir/rawdata/train.txt ]; then
 fi
 
 vocab_size=21128
+stride=512
+n_layers=10
 declare -a additional_chars=("“" "”" "…" "’" "‘" "—" " " "\t" "\`")
 new_vocab_size=$(($vocab_size+${#additional_chars[@]}+26))
 echo 'setting config/vocab.txt and config/model_config.json'
@@ -45,7 +47,13 @@ fi
 
 if [ ! -e $job_dir/config/model_config.json ]; then
     cp config/model_config.json $job_dir/config/model_config.json
+    # change vocabulary size
     perl -pi -e 's/'$vocab_size'/'$new_vocab_size'/g' $job_dir/config/model_config.json
+    # change the number of layers from 12 to $n_layers
+    perl -pi -e 's/"n_layer": 12/"n_layer": '$n_layers'/g' $job_dir/config/model_config.json
+    # change the model input length from 1024 to $stride
+    perl -pi -e 's/"n_ctx": 1024/"n_ctx": '$stride'/g' $job_dir/config/model_config.json
+    perl -pi -e 's/"n_positions": 1024/"n_positions": '$stride'/g' $job_dir/config/model_config.json
 fi
 
 raw_data_path=$job_dir/rawdata/train.txt
@@ -53,9 +61,8 @@ tokenizer_path=$job_dir/config/vocab.txt
 tokenized_data_path=$job_dir/tokenized/
 divide_path=$job_dir/divide/
 model_config=$job_dir/config/model_config.json
-epochs=90
-batch_size=8
-stride=1024
+epochs=30
+batch_size=32
 log_step=20
 output_dir=$job_dir/model/
 num_pieces=1
@@ -74,7 +81,8 @@ if [ ! -e $job_dir/tokenized/tokenized_train_0.txt ]; then
         --log_step $log_step \
         --output_dir $output_dir \
         --num_pieces $num_pieces \
-        --raw 
+        --raw \
+        --ignore_intermediate_epoch_model
 else
     # run the training on the tokenized files
     python train_single.py \
@@ -89,5 +97,6 @@ else
         --log_step $log_step \
         --output_dir $output_dir \
         --num_pieces $num_pieces \
-        --device 0,1
+        --device 0,1 \
+        --ignore_intermediate_epoch_model
 fi

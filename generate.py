@@ -192,9 +192,6 @@ def main():
             for i in range(batch_size):
                 generated += 1
                 text = tokenizer.convert_ids_to_tokens(out)
-                for i, item in enumerate(text):
-                    if item == '[CLS]':
-                        text[i] = '\n\n'
                 info = "=" * 40 + " SAMPLE " + str(generated) + " " + "=" * 40 + "\n"
                 print(info)
                 text = ''.join(text).replace('##', '').strip()
