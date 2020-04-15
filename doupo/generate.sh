@@ -15,6 +15,6 @@ python generate.py \
     --prefix 萧炎 \
     --length 100 \
     --topk 50 \
-    --nsamples 50 \
+    --nsamples 10 \
     --save_samples \
     --save_samples_path $job_dir/outputs/
