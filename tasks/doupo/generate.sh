@@ -1,6 +1,6 @@
-job_dir="doupo"
+job_dir="tasks/doupo"
 
-cd ..
+cd ../..
 
 if [ ! -e $job_dir/outputs ]; then
     mkdir $job_dir/outputs
@@ -12,7 +12,7 @@ python generate.py \
     --model_config $job_dir/model/final_model/model_config.json \
     --tokenizer_path $job_dir/config/vocab.txt \
     --temperature 0.8 \
-    --prefix 萧炎 \
+    --prefix [SEP][CLS]萧炎 \
     --length 100 \
     --topk 50 \
     --nsamples 10 \
