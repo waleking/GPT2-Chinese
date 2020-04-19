@@ -50,5 +50,4 @@ python train_on_small_file.py \
     --log_step $log_step \
     --output_dir $output_dir \
     --num_pieces $num_pieces \
-    --device 0,1 \
-    --ignore_intermediate_epoch_model
+    --device 0,1

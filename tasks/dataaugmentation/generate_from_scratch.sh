@@ -1,6 +1,6 @@
-job_dir="dataaugmentation"
+job_dir="tasks/dataaugmentation"
 
-cd ..
+cd ../..
 
 if [ ! -e $job_dir/outputs_from_scratch ]; then
     mkdir $job_dir/outputs_from_scratch

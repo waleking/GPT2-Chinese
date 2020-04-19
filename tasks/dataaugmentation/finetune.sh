@@ -29,9 +29,9 @@ pretrained_model=$job_dir/pretrained_model
 raw_data_path=$job_dir/rawdata/train.txt
 tokenizer_path=$job_dir/pretrained_model/vocab.txt
 model_config=$job_dir/pretrained_model/config.json
-epochs=30
+epochs=300
 batch_size=8
-log_step=8
+log_step=10
 output_dir=$job_dir/model_finetuned/
 num_pieces=1
 
