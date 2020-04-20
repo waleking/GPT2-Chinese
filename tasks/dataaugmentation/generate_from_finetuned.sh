@@ -19,6 +19,6 @@ python generate.py \
     --prefix [MASK][MASK][MASK]古老的大地上 \
     --length 50 \
     --topk 50 \
-    --nsamples 10 \
+    --nsamples 50 \
     --save_samples \
     --save_samples_path $sample_path
